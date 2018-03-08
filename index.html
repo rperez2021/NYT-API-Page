@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>NYT Article Search</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="jumbotron bg-dark">
+      <div class="row">
+        <div class="col">
+          <h1 class="text-center text-light">
+            <p>New York Times Article Search</p>
+          </h1>
+        </div>
+      </div>
+    </div>
+    <div class="jumbotron">
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <h2>Search Parameters</h2>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <form>
+          <div class="mx-3 row form-group">
+            Search Term
+            <input type="text" class="form-control" id="searchterm" value="article search">
+            <br> Number of Search Terms
+            <input type="number" class="form-control" id="numberofterms" value="5" step="1">
+            <br> Start Date
+            <input type="text" class="form-control" id="startdate" value="20000101">
+            <br> End Date
+            <input type="text" class="form-control" id="enddate" value="20180305">
+            <br>
+            <p></p>
+            <button id="searchbutton" type="search" class="btn btn-primary mt-3">Search</button>
+            <button type="clear" class="btn btn-primary mt-3 mx-3">Clear Results</button>
+        </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="jumbotron">
+      <div class="row border">
+        <div class="col">
+          <h2>Top Articles</h2>
+        </div>
+
+
+      </div>
+      <div class="row">
+        <div class="col" id="articles"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+    var startdate1;
+    var enddate1;
+    var q;
+    q = ($("#searchterm").val());
+    startdate1 = ($("#startdate").val());
+    enddate1 = ($("#enddate").val());
+
+    url += '?' + $.param({
+      'api-key': "982d0fbc54384fc798c6977e93a413eb",
+      'q': q,
+      'begin_date': startdate1,
+      'end_date': enddate1,
+    });
+    console.log(url)
+    $("#searchbutton").on("click", function (event) {
+          event.preventDefault()
+          console.log("hello");
+          $.ajax({
+            url: url,
+            method: 'GET',
+          }).then(function (result) {
+            console.log(result);
+            console.log(result.response.docs[0].headline);
+            writetopage(result);
+
+
+          }).fail(function (err) {
+            throw err;
+          });
+          //This is the part you need to add at the bottom. Here
+          function writetopage(result) {
+            for (i = 0; i < result.response.docs.length; i++) {
+              var article1 = "<a href=" + result.response.docs[i].web_url + ">" + result.response.docs[
+                i].headline.main + "</a><p>" + result.response.docs[i].byline.original + "<p>";
+              $("#articles").append(article1)
+            }
+          }
+});
+          //To Here
+  </script>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
